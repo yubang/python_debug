@@ -27,7 +27,9 @@ class Debugger:
         d = {
             "filepath": frame.tb_frame.f_code.co_filename,
             "code_line": frame.tb_lineno,
-            "data": []
+            "data": [],
+            "func_name": frame.tb_frame.f_code.co_name,
+
         }
         for k in frame.tb_frame.f_locals:
             d['data'].append(get_object_all_data(frame.tb_frame.f_locals[k], k))
@@ -40,7 +42,7 @@ class Debugger:
         :return:
         """
         arr = []
-        frame = sys.exc_info()[2]
+        frame = sys.exc_info()[2].tb_next
         while True:
             if not hasattr(frame, "tb_next"):
                 break

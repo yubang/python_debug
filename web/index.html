@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>错误分析台</title>
+    <link rel="stylesheet" href="./layui/css/layui.css"/>
+</head>
+<body>
+
+<ul class="layui-nav">
+    <li class="layui-nav-item"><a href="">错误分析台</a></li>
+</ul>
+
+<div style="padding:10px;">
+    <form class="layui-form" action="">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">错误代码</label>
+            <div class="layui-input-block">
+                <textarea id="desc" placeholder="请输入错误代码" class="layui-textarea" rows="10"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <a href="javascript:analy();" class="layui-btn">分析</a>
+
+            </div>
+        </div>
+
+    </form>
+
+    <hr>
+    <form class="layui-form" action="">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">错误原因</label>
+            <div class="layui-input-block"><br>
+                <p id="e"></p>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">错误栈堆</label>
+            <div class="layui-input-block">
+                <br>
+                <pre id="error"></pre>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">调用过程</label>
+            <div class="layui-input-block">
+                <br>
+                <div id="show"></div>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="./layui/layui.js"></script>
+<script>
+function isArray(obj){
+return (typeof obj=='object')&&obj.constructor==Array;
+}
+function isObject(obj){
+return (typeof obj=='object')&&obj.constructor==Object;
+}
+            function get_tree_data(objs){
+                if(isArray(objs)){
+                    var arrs = [];
+                    for(var i in objs){
+                        var obj = objs[i];
+                        arrs.push(get_tree_data(obj));
+                    }
+                    return arrs;
+                }else if(isObject(objs)){
+                    var obj = objs;
+                    if(obj['data']!=undefined){
+                            var d = get_tree_data(obj['data']);
+                           return {"name": "文件路径："+obj['filepath'] + ", 行数：" + obj['code_line'] + ", 函数名：" + obj['func_name'] , "children": d}
+                        }else{
+                            var d = get_tree_data(obj['value']);
+                            return {"name": obj['name'], "children": [{"name": "类型："+obj['type']},{"name": "数值："+d}]}
+                        }
+
+                }else{
+                    return objs;
+                }
+            }
+
+            function analy(){
+                $("#show").html("");
+                var code = $("#desc").val();
+                var obj = $.parseJSON(code);
+                $("#e").html(obj['e']);
+                $("#error").html(obj['error']);
+                var d = get_tree_data(obj['trace']);
+                  layui.use('tree', function(){
+                  layui.tree({  elem: '#show' //传入元素选择器
+  ,nodes: d});
+                });
+            }
+
+
+</script>
+</body>
+</html>
