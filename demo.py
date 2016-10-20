@@ -4,7 +4,7 @@
 from debugger import debugger
 
 
-def a1():
+def a1(c):
     a2()
 
 
@@ -35,6 +35,10 @@ def a7():
     return b / c
 
 
+def p(x):
+    print x
+
 if __name__ == '__main__':
     debugger.set_throw_error(False)
-    debugger.run_func(a1, {})
+    # debugger.set_output_func(p)
+    debugger.run_func(a1, {"c": 123})
