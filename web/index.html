@@ -57,6 +57,7 @@
 </div>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="./layui/layui.js"></script>
 <script src="./layui/lay/dest/layui.all.js"></script>
 <script>
 function isArray(obj){
@@ -95,10 +96,8 @@ return (typeof obj=='object')&&obj.constructor==Object;
                 $("#e").html(obj['e']);
                 $("#error").html(obj['error']);
                 var d = get_tree_data(obj['trace']);
-                  layui.use('tree', function(){
-                  layui.tree({  elem: '#show' //传入元素选择器
-  ,nodes: d});
-                });
+
+                  layui.tree({  elem: '#show', nodes: d});
             }
 
 
